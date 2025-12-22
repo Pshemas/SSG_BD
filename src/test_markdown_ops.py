@@ -14,11 +14,6 @@ class TestMarkdownOps(unittest.TestCase):
         ]
         self.assertEqual(new_nodes, expected_nodes)
 
-    def test_to_html(self):
-        node = TextNode("This is text with a `code block` word", TextType.TEXT)
-        with self.assertRaises(ValueError):
-            split_nodes_delimiter([node], "*", TextType.CODE)
-
     def test_split_multiple(self):
         node = TextNode("This is text with a `code block` word", TextType.TEXT)
         node2 = TextNode("This is `code`", TextType.TEXT)
@@ -45,8 +40,8 @@ class TestMarkdownOps(unittest.TestCase):
         self.assertEqual(new_nodes, expected_nodes)
 
     def test_split_text_node_bold(self):
-        node = TextNode("This is *bold*.", TextType.TEXT)
-        new_nodes = split_nodes_delimiter([node], "*", TextType.BOLD)
+        node = TextNode("This is **bold**.", TextType.TEXT)
+        new_nodes = split_nodes_delimiter([node], "**", TextType.BOLD)
         expected_nodes = [
             TextNode("This is ", TextType.TEXT),
             TextNode("bold", TextType.BOLD),
@@ -149,6 +144,29 @@ class TestSplitNodes(unittest.TestCase):
                 ),
             ],
             new_nodes,
+        )
+
+
+class TestTextToTexnodes(unittest.TestCase):
+    def test_conversion(self):
+        sample = "This is **text** with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
+        nodes = text_to_textnodes(sample)
+        self.assertListEqual(
+            [
+                TextNode("This is ", TextType.TEXT),
+                TextNode("text", TextType.BOLD),
+                TextNode(" with an ", TextType.TEXT),
+                TextNode("italic", TextType.ITALIC),
+                TextNode(" word and a ", TextType.TEXT),
+                TextNode("code block", TextType.CODE),
+                TextNode(" and an ", TextType.TEXT),
+                TextNode(
+                    "obi wan image", TextType.IMAGE, "https://i.imgur.com/fJRm4Vk.jpeg"
+                ),
+                TextNode(" and a ", TextType.TEXT),
+                TextNode("link", TextType.LINK, "https://boot.dev"),
+            ],
+            nodes,
         )
 
 

@@ -1,6 +1,5 @@
 from textnode import TextType, TextNode
 import re
-import pprint
 
 
 def split_node(
@@ -10,7 +9,8 @@ def split_node(
 ) -> list[TextNode]:
     resulting_nodes = []
     if delimiter not in old_node.text:
-        raise ValueError("Delimeter not found in node")
+        return [old_node]
+        # raise ValueError("Delimeter not found in node")
     text_sections = old_node.text.split(delimiter)
     if len(text_sections) % 2 == 0:
         raise ValueError("Error in markdown - formatted section not closed.")
@@ -72,7 +72,8 @@ def split_single_node_image(old_node: TextNode) -> list[TextNode]:
                 extra_node = new_nodes.pop()
                 new_nodes.extend(
                     sections_to_nodes(
-                        extra_node.text.split(f"![{tag[0]}]({tag[1]})", 1), tag
+                        extra_node.text.split(f"![{tag[0]}]({tag[1]})", 1),
+                        tag,
                     )
                 )
         return new_nodes
@@ -112,7 +113,7 @@ def split_single_node_link(old_node: TextNode) -> list[TextNode]:
         return [old_node]
 
 
-def split_nodes_link(old_nodes: list[TextNode]):
+def split_nodes_link(old_nodes: list[TextNode]) -> list[TextNode]:
     new_nodes = []
     for node in old_nodes:
         new_nodes.extend(split_single_node_link(node))
@@ -120,15 +121,11 @@ def split_nodes_link(old_nodes: list[TextNode]):
     return new_nodes
 
 
-if __name__ == "__main__":
-    # node = TextNode(
-    #     "This is text with an ![image](https://i.imgur.com/zjjcJKZ.png) and another ![second image](https://i.imgur.com/3elNhQu.png)",
-    #     TextType.TEXT,
-    # )
-    # print(split_nodes_image([node]))
-    node = TextNode(
-        "This is text with a link [to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)",
-        TextType.TEXT,
-    )
-    new_nodes = split_nodes_link([node])
-    pprint.pprint(new_nodes)
+def text_to_textnodes(text: str) -> list[TextNode]:
+    nodes_list = [TextNode(text=text, text_type=TextType.TEXT)]
+    nodes_list = split_nodes_delimiter(nodes_list, "`", TextType.CODE)
+    nodes_list = split_nodes_delimiter(nodes_list, "**", TextType.BOLD)
+    nodes_list = split_nodes_delimiter(nodes_list, "_", TextType.ITALIC)
+    nodes_list = split_nodes_link(nodes_list)
+    nodes_list = split_nodes_image(nodes_list)
+    return nodes_list
