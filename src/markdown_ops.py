@@ -131,5 +131,4 @@ def text_to_textnodes(text: str) -> list[TextNode]:
     return nodes_list
 
 
-def markdown_to_blocks(markdown: str) -> list[str]:
-    return list(filter(None, map(str.strip, markdown.split("\n\n"))))
+
