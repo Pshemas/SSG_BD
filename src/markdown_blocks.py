@@ -15,7 +15,7 @@ def markdown_to_blocks(markdown: str) -> list[str]:
 
 
 def is_unordered_list(markdown_text: str) -> bool:
-    # TODO: simplify with startswith, keeping option to start with number greater than 1
+    # TODO: simplify with startswith and fstring, keeping option to start with number greater than 1
     segments = markdown_text.split("\n")
     first_before_dot = []
     for segment in segments:

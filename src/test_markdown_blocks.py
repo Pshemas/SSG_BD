@@ -29,7 +29,7 @@ class TestBlockToBlockType(unittest.TestCase):
         md = "# This is regular heading."
         self.assertEqual(BlockType.HEADING, block_to_block_type(md))
 
-    def test_heading_negative(self):
+    def test_paragraph(self):
         md = "This is not a heading."
         self.assertEqual(BlockType.PARAGRAPH, block_to_block_type(md))
 
