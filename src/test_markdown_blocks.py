@@ -35,7 +35,7 @@ class TestBlockToBlockType(unittest.TestCase):
 
     def test_code(self):
         md = "```This is code.```"
-        self.assertEqual(BlockType.CODE, block_to_block_type(md))
+        self.assertEqual(BlockType.CODEBLOCK, block_to_block_type(md))
 
     def test_quote(self):
         md = ">This is a quote."

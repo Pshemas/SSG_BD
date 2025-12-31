@@ -4,7 +4,7 @@ from enum import Enum
 class BlockType(Enum):
     PARAGRAPH = "paragraph"
     HEADING = "heading"
-    CODE = "code"
+    CODEBLOCK = "codeblock"
     QUOTE = "quote"
     UNORDERED_LIST = "unordered_list"
     ORDERED_LIST = "ordered_list"
@@ -48,7 +48,7 @@ def block_to_block_type(markdown_text: str) -> BlockType:
     if markdown_text[:2] == "# ":
         return BlockType.HEADING
     if markdown_text[:3] == "```" and markdown_text[-3:] == "```":
-        return BlockType.CODE
+        return BlockType.CODEBLOCK
     if all([x.startswith(">") for x in markdown_text.split("\n")]):
         return BlockType.QUOTE
     if all([x.startswith("- ") for x in markdown_text.split("\n")]):
