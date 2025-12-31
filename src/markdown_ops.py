@@ -2,6 +2,18 @@ from textnode import TextType, TextNode
 import re
 
 
+def extract_title(markdown: str) -> str:
+    sections = markdown.split("\n")
+    title = ""
+    for section in sections:
+        if section[:2] == "# ":
+            title = section.split("# ")[1].strip()
+            break
+    if not title:
+        raise AttributeError("H1 Header not found.")
+    return title
+
+
 def split_node(
     old_node: TextNode,
     delimiter: str,
@@ -129,6 +141,3 @@ def text_to_textnodes(text: str) -> list[TextNode]:
     nodes_list = split_nodes_link(nodes_list)
     nodes_list = split_nodes_image(nodes_list)
     return nodes_list
-
-
-

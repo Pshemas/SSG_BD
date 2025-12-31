@@ -168,3 +168,9 @@ class TestTextToTexnodes(unittest.TestCase):
             ],
             nodes,
         )
+
+
+class TestExtractHeader(unittest.TestCase):
+    def test_header_simple(self):
+        md = "# Hello"
+        self.assertEqual("Hello", extract_title(md))

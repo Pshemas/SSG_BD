@@ -2,10 +2,26 @@ from markdown_blocks import *
 from markdown_ops import *
 from htmlnode import *
 from textnode import *
+from pathlib import Path
+from loguru import logger
+
+
+def generate_page(from_path: Path, template_path: Path, dest_path: Path):
+    logger.info(
+        f"Generating page from {from_path} to {dest_path} using {template_path}."
+    )
+    if not from_path.exists():
+        raise ValueError("Source path not found.")
+    with open(from_path) as source_file:
+        md = source_file.read()
+
+    if not template_path.exists():
+        raise ValueError("Template path not found.")
+    with open(template_path) as template_file:
+        template = template_file.read()
 
 
 def markdown_to_html_node(markdown: str) -> ParentNode:
-    # TODO add heading block conversion
     blocks = markdown_to_blocks(markdown)
     master_htmlnode = ParentNode("div", children=[])
     tags = {
