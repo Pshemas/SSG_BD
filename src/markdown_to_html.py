@@ -20,6 +20,16 @@ def generate_page(from_path: Path, template_path: Path, dest_path: Path):
     with open(template_path) as template_file:
         template = template_file.read()
 
+    html_from_md = markdown_to_html_node(md).to_html()
+    title = extract_title(md)
+
+    final_page = template.replace("{{ Title }}", title).replace(
+        "{{ Content }}", html_from_md
+    )
+
+    dest_path.parent.mkdir(exist_ok=True, parents=True)
+    dest_path.write_text(final_page)
+
 
 def markdown_to_html_node(markdown: str) -> ParentNode:
     blocks = markdown_to_blocks(markdown)
