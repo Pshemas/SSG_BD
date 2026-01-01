@@ -38,7 +38,7 @@ def markdown_to_html_node(markdown: str) -> ParentNode:
         BlockType.PARAGRAPH: "p",
         BlockType.HEADING: "h",
         BlockType.CODEBLOCK: "pre",
-        BlockType.QUOTE: "bloc",
+        BlockType.QUOTE: "blockquote",
         BlockType.UNORDERED_LIST: "ul",
         BlockType.ORDERED_LIST: "ol",
     }
@@ -51,7 +51,9 @@ def markdown_to_html_node(markdown: str) -> ParentNode:
             cleaned_lines = []
             for line in quote_lines:
                 cleaned_line = line.lstrip(">").rstrip()
-                cleaned_lines.append(cleaned_line)
+                if cleaned_line:
+                    cleaned_lines.append(cleaned_line)
+            print(cleaned_lines)
             cleaned_block = " ".join(cleaned_lines)
             children_html_nodes = [LeafNode(None, cleaned_block)]
         elif blocktype == BlockType.CODEBLOCK:
@@ -61,13 +63,16 @@ def markdown_to_html_node(markdown: str) -> ParentNode:
             list_lines = block.split("\n")
             children_html_nodes = []
             for line in list_lines:
-                children_html_nodes.append(LeafNode("li", line.lstrip("- ")))
+                line_nodes = text_to_textnodes(line.strip("- "))
+                html_nodes = [text_node_to_html_node(node) for node in line_nodes]
+                children_html_nodes.append(ParentNode("li", html_nodes))
         elif blocktype == BlockType.ORDERED_LIST:
             list_lines = block.split("\n")
             children_html_nodes = []
             for line in list_lines:
-                list_item = line.split(". ", maxsplit=1)[1]
-                children_html_nodes.append(LeafNode("li", list_item))
+                list_nodes = text_to_textnodes(line.split(". ", maxsplit=1)[1])
+                html_nodes = [text_node_to_html_node(node) for node in list_nodes]
+                children_html_nodes.append(ParentNode("li", html_nodes))
         elif blocktype == BlockType.HEADING:
             children_html_nodes = []
             heading_type = 0
