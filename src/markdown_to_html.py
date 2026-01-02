@@ -32,6 +32,9 @@ def generate_page(from_path: Path, template_path: Path, dest_path: Path):
 
 
 def markdown_to_html_node(markdown: str) -> ParentNode:
+    # TODO: simplify and break to smaller functions
+    # TODO: make sure it handles nested line items in blocks correctly
+    # TODO: consider handling nested blocks like lists inside list
     blocks = markdown_to_blocks(markdown)
     master_htmlnode = ParentNode("div", children=[])
     tags = {
