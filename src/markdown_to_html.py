@@ -18,7 +18,7 @@ def generate_pages(from_directory: Path, template_path: Path, dest_directory: Pa
             destination_item_name = element.stem + ".html"
             destination_path = dest_directory.joinpath(destination_item_name)
             logger.debug(f"Generated item path: {destination_path}")
-            # generate_page(element, template_path, )
+            generate_page(element, template_path, destination_path)
     pass
 
 
@@ -72,7 +72,6 @@ def markdown_to_html_node(markdown: str) -> ParentNode:
                 cleaned_line = line.lstrip(">").rstrip()
                 if cleaned_line:
                     cleaned_lines.append(cleaned_line)
-            print(cleaned_lines)
             cleaned_block = " ".join(cleaned_lines)
             children_html_nodes = [LeafNode(None, cleaned_block)]
         elif blocktype == BlockType.CODEBLOCK:
