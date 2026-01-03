@@ -6,6 +6,22 @@ from pathlib import Path
 from loguru import logger
 
 
+def generate_pages(from_directory: Path, template_path: Path, dest_directory: Path):
+    for element in from_directory.iterdir():
+        if element.is_dir():
+            logger.debug(f"Found dir {element}")
+            new_dest = dest_directory.joinpath(element.name)
+            logger.debug(f"New destination {new_dest}")
+            generate_pages(element, template_path, new_dest)
+        if element.is_file() and element.suffix == ".md":
+            logger.debug(f"Found .md {element}")
+            destination_item_name = element.stem + ".html"
+            destination_path = dest_directory.joinpath(destination_item_name)
+            logger.debug(f"Generated item path: {destination_path}")
+            # generate_page(element, template_path, )
+    pass
+
+
 def generate_page(from_path: Path, template_path: Path, dest_path: Path):
     logger.info(
         f"Generating page from {from_path} to {dest_path} using {template_path}."
