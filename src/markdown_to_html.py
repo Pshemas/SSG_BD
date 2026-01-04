@@ -6,23 +6,25 @@ from pathlib import Path
 from loguru import logger
 
 
-def generate_pages(from_directory: Path, template_path: Path, dest_directory: Path):
+def generate_pages(
+    from_directory: Path, template_path: Path, dest_directory: Path, basepath: str
+):
     for element in from_directory.iterdir():
         if element.is_dir():
             logger.debug(f"Found dir {element}")
             new_dest = dest_directory.joinpath(element.name)
             logger.debug(f"New destination {new_dest}")
-            generate_pages(element, template_path, new_dest)
+            generate_pages(element, template_path, new_dest, basepath)
         if element.is_file() and element.suffix == ".md":
             logger.debug(f"Found .md {element}")
             destination_item_name = element.stem + ".html"
             destination_path = dest_directory.joinpath(destination_item_name)
             logger.debug(f"Generated item path: {destination_path}")
-            generate_page(element, template_path, destination_path)
+            generate_page(element, template_path, destination_path, basepath)
     pass
 
 
-def generate_page(from_path: Path, template_path: Path, dest_path: Path):
+def generate_page(from_path: Path, template_path: Path, dest_path: Path, basepath: str):
     logger.info(
         f"Generating page from {from_path} to {dest_path} using {template_path}."
     )
@@ -39,8 +41,11 @@ def generate_page(from_path: Path, template_path: Path, dest_path: Path):
     html_from_md = markdown_to_html_node(md).to_html()
     title = extract_title(md)
 
-    final_page = template.replace("{{ Title }}", title).replace(
-        "{{ Content }}", html_from_md
+    final_page = (
+        template.replace("{{ Title }}", title)
+        .replace("{{ Content }}", html_from_md)
+        .replace('href="/', f'href="{basepath}')
+        .replace('src="/', f'src="{basepath}')
     )
 
     dest_path.parent.mkdir(exist_ok=True, parents=True)
